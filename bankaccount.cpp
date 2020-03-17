@@ -22,8 +22,7 @@ void BankAccount::setBalance(long newBalance)
 void BankAccount::deposit(long amount)
 {
     // TODO: implement this function
-    m_balance += amount;
-    emit balanceChanged(m_balance);
+    setBalance(m_balance + amount);
 
 }
 
@@ -31,8 +30,7 @@ void BankAccount::withdraw(long amount)
 {
     // TODO: implement this function
     if (m_balance >= amount) {
-        m_balance -= amount;
-        emit balanceChanged(m_balance);
+        setBalance(m_balance - amount);
 
     }
 }
