@@ -1,16 +1,17 @@
 #include <QCoreApplication>
 #include <QString>
-#include <QLinkedList>
+#include <QList>
+#include <QStack>
 #include <QDebug>
 
-QString findLongestName(QLinkedList<QString> names);
-QString findShortestName(QLinkedList<QString> names);
-QStringList printLynn(QLinkedList<QString> names);
-void printInBackOrder(QLinkedList<QString> names);
+QString findLongestName(QList<QString> names);
+QString findShortestName(QList<QString> names);
+QStringList printLynn(QList<QString> names);
+void printInBackOrder(QList<QString> names);
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    QLinkedList<QString> names;
+    QList<QString> names;
     names << "123" << "123456lynn" << "12345lynn" << "12";
     QString str("longest name %1");
     qDebug() << str.arg(findLongestName(names));
@@ -25,11 +26,11 @@ int main(int argc, char *argv[])
 }
 
 
-QString findLongestName(QLinkedList<QString> names) {
+QString findLongestName(QList<QString> names) {
     QString returnString;
-    QLinkedListIterator<QString> iterator(names);
-    while (iterator.hasNext()) {
-        QString next = iterator.next();
+    QListIterator<QString> current(names);
+    while (current.hasNext()) {
+        QString next = current.next();
         if (next.length() > returnString.length()) {
             returnString = next;
         }
@@ -38,24 +39,21 @@ QString findLongestName(QLinkedList<QString> names) {
 }
 
 
-QString findShortestName(QLinkedList<QString> names) {
-    auto iterator = names.begin();
-    QString returnString = *iterator;
-    ++iterator;
+QString findShortestName(QList<QString> names) {
+    QString returnString = "";
 
-    while (iterator != names.end()) {
-        if (iterator->length() < returnString.length()) {
-            returnString = *iterator;
+    for (auto current = names.begin(); current < names.end(); ++current) {
+        if (current->length() < returnString.length() || !returnString.length()) {
+            returnString = *current;
         }
-        ++iterator;
     }
     return returnString;
 }
 
-QStringList printLynn(QLinkedList<QString> names) {
+QStringList printLynn(QList<QString> names) {
     QStringList list;
     foreach(QString str,  names) {
-        if (str.right(4) == "lynn") {
+        if (str.endsWith("lynn")) {
             list.push_back(str);
         }
     }
@@ -63,11 +61,20 @@ QStringList printLynn(QLinkedList<QString> names) {
 }
 
 
-void printInBackOrder(QLinkedList<QString> names) {
-    auto iterator = names.rbegin();
-    while (iterator !=  names.rend()) {
-        qDebug() << *iterator;
-        ++iterator;
+void printInBackOrder(QList<QString> names) {
+    auto current = names.rbegin();
 
+    qDebug() << "QList:";
+    while (current !=  names.rend()) {
+        qDebug() << *current;
+        ++current;
+
+    }
+
+    qDebug() << "QStack:";
+    QStack<QString> namesStack;
+    namesStack += QStack<QString>::fromList(names);
+    while (namesStack.size()) {
+        qDebug () << namesStack.pop();
     }
 }
